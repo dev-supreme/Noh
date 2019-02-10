@@ -21,7 +21,7 @@ int InsertNode(int data)
 
 	if (NULL == pRoot)
 	{
-		pRoot = pNewNode;
+		pNewNode = pRoot;
 	}
 	else
 	{
@@ -31,27 +31,47 @@ int InsertNode(int data)
 		{
 			pNode->pLeft = pNewNode;
 		}
-		while (pRoot->pLeft != NULL || pRoot->pRight != NULL) //Something on the Left or Right Node
+		while (1) //Something on the Left or Right Node //pRoot->pLeft != NULL || pRoot->pRight != NULL
 		{
 			if (pNewNode->nData < pNode->nData) //smaller than parent Node
 			{
-				pNode->pLeft = pNewNode;
+				if (pNode->pLeft == NULL)
+				{
+
+					pNode->pLeft = pNewNode;
+					break;
+				}
+				else
+				{
+					pNode->pLeft = pNode;
+				}
 			}
-			else // bigger than parent Node
+			else if (pNewNode->nData > pNode->nData) // bigger than parent Node
 			{
-				pNode->pRight = pNewNode;
+				if (pNode->pRight == NULL)
+				{
+					pNode->pRight = pNewNode;
+					break;
+				}
+				else
+				{
+					pNode->pRight = pNode;
+				}
+			}
+			else
+			{
+				free(pNewNode);
+				return -1;
 			}
 		}
 	}
 }
 
-void Printtree()
-{
-	
-}
 int main(void)
 {
-
+	InsertNode(7);
+	InsertNode(10);
+	InsertNode(3);
 
 	system("pause");
 	return 0;
