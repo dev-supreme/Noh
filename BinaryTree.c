@@ -1,17 +1,83 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 #include <Windows.h>
 
-typedef struct Node
+struct _Node
 {
 	int nData;
-	struct Node* pLeft;
-	struct Node* pRight;
-}Node;
+	struct _Node* pLeft;
+	struct _Node* pRight;
+}; typedef struct _Node Node;
+
+struct _QNode
+{
+	Node* qdata;
+	struct _QNode *pNext;
+}; typedef struct _QNode QNode;
+
+struct _Queue
+{
+	QNode* front;
+	QNode* rear;
+}; typedef struct _Queue Queue;
+
 
 Node* pRoot = NULL;
 
-int InsertNode(int data)
+
+void Enqueue(Queue *queue, Node* data)
+{
+	QNode* qNewNode = (QNode*)malloc(sizeof(QNode));
+
+	qNewNode->qdata = data;
+	qNewNode->pNext = NULL;
+
+	if (queue->front == NULL)
+	{
+		queue->front = qNewNode;
+		queue->rear = qNewNode;
+	}
+	else
+	{
+		queue->rear->pNext = qNewNode;
+		queue->rear = qNewNode;
+	}
+}
+
+QNode* Dequeue(Queue* queue)
+{
+	if (queue->front == NULL)
+		return NULL;
+
+	QNode* QtmpNode = queue->front;
+	QNode* data = QtmpNode->qdata;
+	queue->front = queue->front->pNext;
+
+	free(QtmpNode);
+	QtmpNode = NULL;
+	return data;
+}
+
+void Printtree(Queue *queue)
+{
+	Node* data = NULL;
+	Queue *q;
+
+	Enqueue(&q, pRoot);
+	while (1)
+	{
+		data = Dequeue(&q);
+		if (data == NULL) break;
+		printf("%d", data->nData);
+
+		if (data->pLeft != NULL)
+			Enqueue(&q, data->pLeft);
+		if (data->pRight != NULL)
+			Enqueue(&q, data->pRight);
+	}
+}
+
+void InsertNode(Node **pRoot, int data)
 {
 	Node *pNewNode = (Node*)malloc(sizeof(Node)); //노드 담을 공간 head메모리에 할당 (malloc)
 
@@ -19,13 +85,13 @@ int InsertNode(int data)
 	pNewNode->pLeft = NULL;
 	pNewNode->pRight = NULL;
 
-	if (NULL == pRoot)
+	if (NULL == *pRoot)
 	{
-		pRoot = pNewNode;
+		*pRoot = pNewNode;
 	}
 	else
 	{
-		Node *pNode = pRoot;
+		Node *pNode = *pRoot;
 		//smalelr than parent Node
 		if (pNewNode->nData < pNode->nData)
 		{
@@ -37,7 +103,6 @@ int InsertNode(int data)
 			{
 				if (pNode->pLeft == NULL)
 				{
-
 					pNode->pLeft = pNewNode;
 					break;
 				}
@@ -64,6 +129,7 @@ int InsertNode(int data)
 	}
 }
 
+/*
 int DeleteNode(int data)
 {
 	Node* tmpNode = NULL;  //임시노드선언
@@ -80,7 +146,7 @@ int DeleteNode(int data)
 		if (data <= ParentNode->nData)
 		{
 			ParentNode->pLeft = tmpNode;
-		} 
+		}
 		else
 		{
 			ParentNode->pRight = tmpNode;
@@ -111,26 +177,33 @@ int DeleteNode(int data)
 	}
 
 	//if childNode == 1
-	if(ChildNode->pLeft ==)
-	if ((NULL == tmpNode->pLeft) || (NULL == tmpNode->pRight))
+	if ((NULL != tmpNode->pLeft) || (NULL == tmpNode->pRight))
 	{
-
-	}
+		if (tmpNode->pLeft != NULL)
+		{
+			if(tmpNode->pLeft)
+		}
+	}d
 
 	;
-}
+} */
+
 int main(void)
 {
-	InsertNode(7);
-	InsertNode(10);
-	InsertNode(3);
-	InsertNode(5);
-	InsertNode(14);
-	InsertNode(12);
-	InsertNode(2);
-	InsertNode(17);
-	InsertNode(4);
-	InsertNode(9);
+	Node* root = NULL;
+
+	InsertNode(&root, 7);
+	InsertNode(&root, 10);
+	InsertNode(&root, 3);
+	InsertNode(&root, 5);
+	InsertNode(&root, 14);
+	InsertNode(&root, 12);
+	InsertNode(&root, 2);
+	InsertNode(&root, 17);
+	InsertNode(&root, 4);
+	InsertNode(&root, 9);
+
+	Printtree(&root);
 
 	system("pause");
 	return 0;
